@@ -11,14 +11,21 @@ console.log(reviewList)
 //fetch shoes from json
 fetch('http://127.0.0.1:3000/shoes') 
     .then(response => response.json())
-    .then(data => console.log(data[0].company))
+    .then(data => {
+        data.forEach(element => console.log(element))
+    })
+
     
 
-
-//iterate over shoes
-
+    
+//iterate over shoes  
+//TODO figure out how to get data to show
+    
 
 //shoeList.append(shoes)
+    //create p tag for shoes once data is showing
+    const newPTag = document.createElement('p')
+        console.log(newPTag)
 
 
 
