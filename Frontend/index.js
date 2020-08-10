@@ -2,6 +2,8 @@
 const shoeDisplay = document.querySelector("ul.list-group")
 const shoeCardDiv = document.querySelector("div#main-shoe")
 const shoeFromContainer = document.querySelector("#form-container")
+const shoeReviewsContainer = document.querySelector("h5.card-header")
+const shoeReviewUl = document.querySelector('ul#reviews-list')
 
 fetch("http://localhost:3000/shoes/?_limit=1")
     .then(response => response.json())
@@ -26,16 +28,39 @@ function shoeToHtml(obj){
           <p class="card-text" id="shoe-description">${obj.description}</p>
           <p class="card-text"><small class="text-muted" id="shoe-price">$ ${obj.price}</small></p>`
 
-          
-        //   <div class="container" id="form-container">
-        //   </div> <h5 class="card-header">Reviews</h5>
-        //   <ul class="list-group list-group-flush" id="reviews-list">
-        //     <!-- REVIEWS GO HERE -->
-        //   </ul>
-        // </div>`
+        let newShoeform = document.createElement("form")
+        let contentShoe = document.createElement("input")
+            contentShoe.name = "description"
+            contentShoe.placeholder = "review"
+        let contentBtn = document.createElement("button")
+            contentBtn.innerText = "submit"
+        newShoeform.append(contentShoe, contentBtn)
+        shoeFromContainer.append(newShoeform)
+       
+      
+        obj.reviews.forEach(review =>{   
+          let reviewLi = document.createElement("li") 
+            reviewLi.innerText = review.content
+            shoeReviewUl.append(reviewLi)
+        })
+        
+        shoeCardDiv.append(shoeFromContainer,shoeReviewUl)
+     
+
     })
   
 }
+
+shoeFromContainer.addEventListener("submit", evt =>{
+    evt.preventDefault()
+    console.log("this is the evt:", evt.target);
+   
+    //post request sent to db
+    // let userInput = document.querySelector("button")
+    // console.log(userInput);
+
+
+})
 
 
 
