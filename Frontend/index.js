@@ -21,7 +21,7 @@ function turnShoeIntoLi(shoe){
   myShoeLi.innerHTML = shoe.name
   myShoeUl.append(myShoeLi)
   myShoeLi.addEventListener("click", (evt) =>{
-    shoeDisplayReviewsUl.innerHTML = "" //cheap and dirty i know. sorry ran out of time
+    shoeDisplayReviewsUl.innerHTML = "" //cheap and dirty i know. sorry ran out of time. Not underlined yet to show its clickable
     turnShoeIntoDisplay(shoe)
   })
 
@@ -48,3 +48,5 @@ fetch('http://localhost:3000/shoes/1')
   }
 
   //Deliverable 3
+
+  
