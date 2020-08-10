@@ -12,9 +12,21 @@ console.log(reviewList)
 fetch('http://127.0.0.1:3000/shoes') 
     .then(response => response.json())
     .then(data => {
-        data.forEach(element => console.log(element))
-    })
+    data.forEach(element => (console.log(element.company)))
 
+    const newLi = document.createElement('li')
+    newLi.className = "list-group-item"
+    newLi.innerText = 
+    console.log(newLi)
+    
+    
+    // newPtag.innerText = `${shoes}`;
+// learn how to iterate over data         
+    
+    
+
+
+})
     
 
     
@@ -24,14 +36,12 @@ fetch('http://127.0.0.1:3000/shoes')
 
 //shoeList.append(shoes)
     //create p tag for shoes once data is showing
-    const newPTag = document.createElement('p')
-        console.log(newPTag)
 
 
 
 // When a user clicks on one of the shoes in the sidebar, they should be able to see more details about the shoe, the reviews associated with it and a form in the main container. There should only be one shoe in the main container at one time.
 
-// click even displays shoe 
+// click displays shoe 
 
 
 //display review associated with it
