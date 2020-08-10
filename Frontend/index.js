@@ -58,6 +58,10 @@ shoeFromContainer.addEventListener("submit", evt =>{
     //post request sent to db
     // let userInput = document.querySelector("button")
     // console.log(userInput);
+    // assign this input to a obj
+    // call fetch on the api with the method Post, accesse the reviews
+    // add to the review
+    // return the add on the new review
 
 
 })
