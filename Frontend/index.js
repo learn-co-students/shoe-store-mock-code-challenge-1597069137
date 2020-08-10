@@ -20,9 +20,14 @@ function turnShoeIntoLi(shoe){
   let myShoeLi = document.createElement("li")
   myShoeLi.innerHTML = shoe.name
   myShoeUl.append(myShoeLi)
+  myShoeLi.addEventListener("click", (evt) =>{
+    shoeDisplayReviewsUl.innerHTML = "" //cheap and dirty i know. sorry ran out of time
+    turnShoeIntoDisplay(shoe)
+  })
+
 }
 
-//Deliverable 2 
+//Deliverable 2
 fetch('http://localhost:3000/shoes/1')
   .then (resp => resp.json())
   .then (shoe =>{
