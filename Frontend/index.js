@@ -26,7 +26,15 @@ function postReview(e) {
   }
 
   fetch(`http://localhost:3000/shoes/${shoeId}/reviews`, postConfig)
-    .then(_ => fetchShoe(shoeId));
+    .then(res => res.json())
+    .then(review => appendReview(review));
+}
+
+function appendReview(review) {
+  const li = document.createElement('li');
+  li.textContent = review.content;
+  li.dataset.reviewId = review.id;
+  shoeReviews.append(li);
 }
 
 function showShoesInSidebar() {
