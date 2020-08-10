@@ -34,6 +34,7 @@ function appendReview(review) {
   const li = document.createElement('li');
   li.textContent = review.content;
   li.dataset.reviewId = review.id;
+  li.classList.add('list-group-item');
   shoeReviews.append(li);
 }
 
@@ -49,9 +50,9 @@ function showShoesInSidebar() {
 function addShoeToShoeList(shoe) {
   const li = document.createElement('li');
   li.textContent = shoe.name;
-  li.style.color = "blue";
   li.style.cursor = "pointer";
   li.dataset.shoeId = shoe.id;
+  li.classList.add('list-group-item');
   li.addEventListener('click', showShoe);
   shoeList.append(li);
 }
@@ -87,6 +88,7 @@ function updateShoeReviews(reviews) {
     const li = document.createElement('li');
     li.textContent = review.content;
     li.dataset.reviewId = review.id;
+    li.classList.add('list-group-item');
     shoeReviews.append(li);
   })
 }
@@ -97,10 +99,13 @@ function createReviewForm() {
 
   const textarea = document.createElement('textarea');
   textarea.id = 'shoe-form-text'
+  textarea.classList.add('form-control');
 
   const br = document.createElement('br');
 
   const input = document.createElement('input');
+  input.classList.add('btn');
+  input.classList.add('btn-primary');
   input.type = "submit";
 
   form.append(textarea, br, input);
