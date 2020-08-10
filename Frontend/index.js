@@ -1,60 +1,90 @@
-// Code your solution here
-const shoeList = document.querySelector('#shoe-list')
-const formContainer = document.querySelector('#form-container')
-const reviewList = document.querySelector('#reviews-list')
+const ulShoeList = document.querySelector('#shoe-list')
+const shoeImg = document.querySelector("#shoe-image")
+const shoeH4Name = document.querySelector("#shoe-name")
+const shoePDescription = document.querySelector('#shoe-description')
+const shoePrice = document.querySelector("#shoe-price")
+const shoeReview = document.querySelector("#reviews-list")
+const form = document.querySelector("#form-container")
 
-console.log(shoeList)
-console.log(formContainer)
-console.log(reviewList)
-// When a user loads the page, they should be able to see a list of all the shoes in the sidebar and by default, have the first shoe rendered in the main container (see deliverable 2).
+fetch('http://localhost:3000/shoes')
+    .then(res => res.json())
+    .then(shoes => {
+        shoes.forEach((singleShoe) => {
+            turnShoeToSideBar(singleShoe)
+        })
+        renderShoe(shoes[0])
+    })
+    
+    let turnShoeToSideBar = (shoeObj) => {
+        const sideBarShoeLi = document.createElement('li')
+        sideBarShoeLi.innerText = shoeObj.name
+    sideBarShoeLi.className = "list-group-item"
+    ulShoeList.append(sideBarShoeLi)
 
-//fetch shoes from json
-fetch('http://127.0.0.1:3000/shoes') 
-    .then(response => response.json())
-    .then(data => {
-    data.forEach(element => (console.log(element.company)))
+    sideBarShoeLi.addEventListener('click', (evt) => {
+    renderShoe(shoeObj)
+    })
 
-    const newLi = document.createElement('li')
-    newLi.className = "list-group-item"
-    newLi.innerText = 
-    console.log(newLi)
+}
+
+let renderShoe = (shoe) => {
+    shoeImg.src = shoe.image
+    shoeH4Name.innerText = shoe.name
+    shoePDescription.innerText = shoe.description
+    shoePrice.innerText = shoe.price
+    
+    shoeReview.innerText = ""
+    //reviews
+    shoe.reviews.forEach((review) =>{
+        const reviewLi = document.createElement('li')
+        reviewLi.className = "list-group-item"
+        reviewLi.innerText = review.content
+        shoeReview.append(reviewLi)
+
+    })
+    form.innerHTML = ""
+
+    const createForm = document.createElement('form')
+    createForm.id = "new-review"
+    const createDiv = document.createElement('div')
+    createDiv.className = "form-group"
+    const textArea = document.createElement('textarea')
+    textArea.className = "form-control"
+    textArea.id = "review-content"
+    textArea.rows = "3"
+    const input = document.createElement('input')
+    input.type = "submit"
+    input.className = "btn btn-primary"
+
     
     
-    // newPtag.innerText = `${shoes}`;
-// learn how to iterate over data         
+    createDiv.append(textArea, input)
+    createForm.append(createDiv)
+    form.append(createForm)
+
+    createForm.addEventListener('submit', (evt) => {
+        evt.preventDefault()
+        const userInput = (evt.target["review-content"].value)
     
-    
+        fetch(`http://localhost:3000/shoes/${shoe.id}/reviews`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                content: userInput
+            })
+            
+        })
+        .then(response => response.json())
+        .then(newRevieObj => {
+            const newReviewLi = document.createElement('li')
+            newReviewLi.className = "list-group-item"
+            newReviewLi.innerText = newRevieObj.content
+            shoeReview.append(newReviewLi)
 
+            shoe.reviews.push(newRevieObj)
+        })   
+     })
 
-})
-    
-
-    
-//iterate over shoes  
-//TODO figure out how to get data to show
-    
-
-//shoeList.append(shoes)
-    //create p tag for shoes once data is showing
-
-
-
-// When a user clicks on one of the shoes in the sidebar, they should be able to see more details about the shoe, the reviews associated with it and a form in the main container. There should only be one shoe in the main container at one time.
-
-// click displays shoe 
-
-
-//display review associated with it
-
-
-//form in main container 'formContainer'
-
-
-
-// When a user fills the form out and submits it, the review should get persisted in the backend and also be shown on the page, without refreshing. When you create a review for a given shoe, if you click on another shoe and you go back to your initial shoe, you should see the new review persist without refreshing.
-
-//event listener 'submit'
-
-
-//
-// event.preventDefault()
+}
