@@ -1,70 +1,114 @@
 // Code your solution here
-const shoeDisplay = document.querySelector("ul.list-group")
-const shoeCardDiv = document.querySelector("div#main-shoe")
-const shoeFromContainer = document.querySelector("#form-container")
-const shoeReviewsContainer = document.querySelector("h5.card-header")
-const shoeReviewUl = document.querySelector('ul#reviews-list')
+const shoeListSideBar = document.querySelector("#shoe-list")
+// this is a ul so we will have to create lis with the information we are given
+const shoeCardDiv = document.querySelector("#main-shoe")
+// this div will be assigned the goods
+const shoeCardBody = document.querySelector(".card-body")
+const shoeCardImg = document.querySelector("#shoe-image")
+const shoeCardH4 = document.querySelector("#shoe-name")
+const shoeCardP = document.querySelector("#shoe-description")
+const shoeCardPrice = document.querySelector("#shoe-price")
+const shoeFormContainer = document.querySelector("#form-container")
+const reviewsUl = document.querySelector("#reviews-list")
 
-fetch("http://localhost:3000/shoes/?_limit=1")
-    .then(response => response.json())
-    .then(shoeData => {
-        shoeData.forEach(shoeObj => {
-            shoeToHtml(shoeObj)
-        });
-    })
-
-function shoeToHtml(obj){
-    let objLi = document.createElement("li")
-        objLi.classList.add("list-group-item")
-         objLi.innerText = obj.name
-    shoeDisplay.append(objLi)
-
-    objLi.addEventListener("click", evt=>{
-        shoeCardDiv.innerText = ""
-        // create a card with more info on the obj +review(nested)
-        shoeCardDiv.innerHTML = `<img class="card-img-top" id="shoe-image" alt="Shoe Image Goes Here" src= ${obj.image}>
-        <div class="card-body">
-          <h4 class="card-title" id="shoe-name">${obj.name}</h4>
-          <p class="card-text" id="shoe-description">${obj.description}</p>
-          <p class="card-text"><small class="text-muted" id="shoe-price">$ ${obj.price}</small></p>`
-
-        let newShoeform = document.createElement("form")
-        let contentShoe = document.createElement("input")
-            contentShoe.name = "description"
-            contentShoe.placeholder = "review"
-        let contentBtn = document.createElement("button")
-            contentBtn.innerText = "submit"
-        newShoeform.append(contentShoe, contentBtn)
-        shoeFromContainer.append(newShoeform)
-       
-      
-        obj.reviews.forEach(review =>{   
-          let reviewLi = document.createElement("li") 
-            reviewLi.innerText = review.content
-            shoeReviewUl.append(reviewLi)
+fetch("http://localhost:3000/shoes")
+    .then(resp => resp.json())
+    .then(shoesObjArray =>{
+        shoesObjArray.forEach(shoeObj =>{
+            // put this shoeObj onto the html
+            convertShoeToHtml(shoeObj)
         })
-        
-        shoeCardDiv.append(shoeFromContainer,shoeReviewUl)
-     
+        shoeCardHtml(shoesObjArray[3])
+    })
+
+
+function convertShoeToHtml(obj){
+    // this function should just portray the shoe as an li
+    let shoeLi = document.createElement("li")
+        shoeLi.classList.add("list-group-item")
+        shoeLi.innerText = obj.name
+    shoeListSideBar.append(shoeLi) 
+
+    shoeLi.addEventListener("click", evt =>{
+        // you still have access to the obj that was passed through
+        // pass this creation here like we did in our fetch
+        // when the li is clicked you need to clear the previous output
+        shoeCardBody.innerText = ""
+        shoeCardHtml(obj)
 
     })
-  
 }
 
-shoeFromContainer.addEventListener("submit", evt =>{
-    evt.preventDefault()
-    console.log("this is the evt:", evt.target);
-   
-    //post request sent to db
-    // let userInput = document.querySelector("button")
-    // console.log(userInput);
-    // assign this input to a obj
-    // call fetch on the api with the method Post, accesse the reviews
-    // add to the review
-    // return the add on the new review
 
-})
+function shoeCardHtml(shoeObj){
+    // this has to get access to the elements from the given html
+    
+    shoeCardImg.src = shoeObj.image
+    shoeCardH4.innerText = shoeObj.name
+    shoeCardP.innerText = shoeObj.description
+    shoeCardPrice.innerText = `$ ${shoeObj.price}`
+    // have to clear the from everytime there is a click
+    shoeFormContainer.innerText = ""
+
+    let newShoeForm = document.createElement("form")
+        newShoeForm.id = "new-review"
+    let formGroup = document.createElement("div")
+        formGroup.classList.add("form-group")
+    let formInput = document.createElement("textarea")
+        formInput.classList.add("form-control")
+        formInput.id = "review-content"
+        formInput.rows = "3"
+    let sbmtBtn = document.createElement("input")
+        sbmtBtn.type = "submit"
+        sbmtBtn.classList.add("btn")
+        sbmtBtn.classList.add("btn-primary")
+    formGroup.append(formInput, sbmtBtn)
+    newShoeForm.append(formGroup)
+    shoeFormContainer.append(newShoeForm)
+    shoeCardBody.append(shoeCardImg, shoeCardH4, shoeCardP, shoeCardPrice, shoeFormContainer)
+
+    shoeReviewLister(shoeObj)
+
+
+    newShoeForm.addEventListener("submit", function(evt) {   
+        evt.preventDefault()
+        
+        let userInput = evt.target["review-content"].value
+       
+        fetch(`http://localhost:3000/shoes/${shoeObj.id}/reviews`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                content: userInput
+            })
+        })
+        .then(resp => resp.json())
+        .then(newReview =>{
+            
+            shoeObj.reviews.push(newReview)
+            shoeReviewLister(shoeObj)
+
+        })
+    
+    })
+ 
+}
 
 
 
-
+// get access to the obj in question 
+// get their reviews and display them as lis
+// somehow update the obj in memory
+function shoeReviewLister(obj){
+    reviewsUl.innerText = ""
+    console.log(obj.reviews)
+    obj.reviews.forEach(review =>{
+       let reviewLi = document.createElement("li")
+        reviewLi.classList.add("list-group-item")
+        reviewLi.innerText = review.content
+        reviewsUl.append(reviewLi)
+    })
+    
+}
